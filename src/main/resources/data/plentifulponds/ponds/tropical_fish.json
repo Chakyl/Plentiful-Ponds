@@ -1,0 +1,43 @@
+{
+  "pond_id": "tropical_fish",
+  "color": "#f17226",
+  "fish": {
+    "id": "minecraft:tropical_fish"
+  },
+  "max_population": 10,
+  "max_roe": 2,
+  "reproduction_rate": 2,
+  "quests": [
+    {
+      "population": 3,
+      "requested_items": [
+        { "id": "minecraft:azure_bluet", "count": 4 },
+        { "id": "minecraft:lily_of_the_valley", "count": 4 }
+      ]
+    },
+    {
+      "population": 5,
+      "requested_items": [
+        { "id": "minecraft:beetroot", "count": 4 },
+        { "id": "minecraft:melon_slice", "count": 8 }
+      ]
+    },
+    {
+      "population": 7,
+      "requested_items": [
+        { "id": "minecraft:raw_iron", "count": 16 },
+        { "id": "minecraft:iron_block", "count": 4 }
+      ]
+    }
+  ],
+  "drops": [
+    {
+      "min_population": 8,
+      "drop": {
+        "id": "plentifulponds:aquamarine",
+        "count": 1
+      },
+      "chance": 0.32
+    }
+  ]
+}

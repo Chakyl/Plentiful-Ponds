@@ -1,0 +1,21 @@
+{
+  "block.plentifulponds.fish_pond": "Fish Pond",
+  "block.plentifulponds.fish_pond_basket": "Fish Pond Basket",
+  "block.plentifulponds.roe_recycler": "Roe Reycler",
+  "config.jade.plugin_plentifulponds.plentifulponds": "Plentiful Ponds",
+
+  "item.plentifulponds.default_roe": "Roe",
+  "item.plentifulponds.roe": "%s Roe",
+  "item.plentifulponds.default_aged_roe": "Aged Roe",
+  "item.plentifulponds.aged_roe": "Aged %s Roe",
+  "item.plentifulponds.default_smoked_fish": "Smoked Fish",
+  "item.plentifulponds.smoked_fish": "Smoked %s",
+  "item.plentifulponds.sea_biscuit": "Sea Biscuit",
+  "item.plentifulponds.aquamarine": "Aquamarine",
+
+  "itemGroup.plentifulponds": "Plentiful Ponds",
+
+  "jei.plentifulponds.fish_farming.population": "%s+ 🐟 population required",
+  "jei.plentifulponds.fish_farming.chance": "%s%% chance",
+  "jei.plentifulponds.fish_farming.info": "Hover over items for more info."
+}

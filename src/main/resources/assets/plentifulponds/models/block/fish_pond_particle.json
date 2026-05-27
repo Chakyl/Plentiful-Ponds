@@ -1,0 +1,8 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"2": "plentifulponds:block/fish_pond",
+		"3": "plentifulponds:block/fish_pond_in",
+		"particle": "plentifulponds:block/fish_pond"
+	}
+}
