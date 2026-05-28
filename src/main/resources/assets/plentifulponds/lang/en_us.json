@@ -17,5 +17,12 @@
 
   "jei.plentifulponds.fish_farming.population": "%s+ 🐟 population required",
   "jei.plentifulponds.fish_farming.chance": "%s%% chance",
-  "jei.plentifulponds.fish_farming.info": "Hover over items for more info."
+  "jei.plentifulponds.fish_farming.info": "Hover over items for more info.",
+  "gui.plentifulponds.pond.name": "%s Pond",
+  "gui.plentifulponds.pond.population": "Population: %s/%s",
+  "gui.plentifulponds.pond.flavor0": "The pond is still... For now.",
+  "gui.plentifulponds.pond.flavor1": "You hear the fish splashing around!",
+  "gui.plentifulponds.pond.flavor2": "The fish are swimming around methodically.",
+  "gui.plentifulponds.pond.flavor3": "Splish splash!",
+  "gui.plentifulponds.pond.flavor4": "The fish are playing trading cards."
 }

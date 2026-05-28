@@ -6,18 +6,25 @@ import io.github.chakyl.plentifulponds.data.Pond;
 import io.github.chakyl.plentifulponds.item.AgedRoeItem;
 import io.github.chakyl.plentifulponds.item.RoeItem;
 import io.github.chakyl.plentifulponds.ModElements;
+import io.github.chakyl.plentifulponds.screen.FishPondScreen;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import static io.github.chakyl.plentifulponds.PlentifulPonds.loc;
 
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = PlentifulPonds.MODID)
 public class ClientModEvents {
+
+    @SubscribeEvent
+    public static void screens(RegisterMenuScreensEvent e) {
+        e.register(ModElements.Menus.FISH_POND, FishPondScreen::new);
+    }
 
     @SubscribeEvent
     public static void mrl(ModelEvent.RegisterAdditional e) {

@@ -23,7 +23,7 @@ public class RoeItem extends Item implements ITabFiller {
         Component roeName;
         if (!pond.isBound()) {
             roeName = Component.translatable("item.plentifulponds.default_roe");
-        } else roeName = pond.get().name().plainCopy();
+        } else roeName = pond.get().name().copy();
         return Component.translatable(this.getDescriptionId(pStack), roeName);
     }
 

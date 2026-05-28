@@ -9,12 +9,14 @@ import io.github.chakyl.plentifulponds.data.Pond;
 import io.github.chakyl.plentifulponds.data.PondRegistry;
 import io.github.chakyl.plentifulponds.item.AgedRoeItem;
 import io.github.chakyl.plentifulponds.item.RoeItem;
+import io.github.chakyl.plentifulponds.screen.FishPondMenu;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
@@ -60,7 +62,7 @@ public class ModElements {
 
 
     public static class Menus {
-//        public static final RegistryObject<MenuType<PlortPressMenu>> PLORT_PRESS_MENU = R.menu("plort_press_menu", () -> MenuUtil.bufType(PlortPressMenu::new));
+        public static final MenuType<FishPondMenu> FISH_POND = R.menuWithPos("fish_pond", FishPondMenu::new);
 
         private static void bootstrap() {
         }
@@ -75,13 +77,14 @@ public class ModElements {
                 .networkSynchronized(PondRegistry.INSTANCE.holderStreamCodec()));
 
 
-
-        private static void bootstrap() {}
+        private static void bootstrap() {
+        }
     }
+
     public static class Tabs {
         public static final ResourceKey<CreativeModeTab> TAB_KEY = ResourceKey.create(Registries.CREATIVE_MODE_TAB, loc("tab"));
 
-        public static final Holder<CreativeModeTab> TAB = R.creativeTab("tab", b -> b.title(Component.translatable("itemGroup." + PlentifulPonds.MODID)).icon(() -> Items.AQUAMARINE.value().getDefaultInstance()));
+        public static final Holder<CreativeModeTab> TAB = R.creativeTab("tab", b -> b.title(Component.translatable("itemGroup." + PlentifulPonds.MODID)).icon(() -> Items.FISH_POND.value().getDefaultInstance()));
 
         private static void bootstrap() {
         }

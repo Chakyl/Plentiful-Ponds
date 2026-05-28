@@ -1,9 +1,6 @@
 {
-  "pond_id": "pufferfish",
   "color": "#f9b00a",
-  "fish": {
-    "id": "minecraft:pufferfish"
-  },
+  "fish": "minecraft:pufferfish",
   "max_population": 10,
   "max_roe": 1,
   "reproduction_rate": 4,

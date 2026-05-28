@@ -7,12 +7,16 @@ import io.github.chakyl.plentifulponds.ModElements;
 import io.github.chakyl.plentifulponds.data.codec.PondDrop;
 import io.github.chakyl.plentifulponds.data.codec.PondQuest;
 import io.github.chakyl.plentifulponds.item.RoeItem;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,20 +24,22 @@ import java.util.Optional;
 /**
  * Stores all of the information of a pond
  *
- * @param pondId
  * @param displayName
  * @param fish
  * @param cookedVariant
+ * @param reproductionRate
  * @param maxPopulation
  * @param quests
  * @param pondDrops
  */
-public record Pond(String pondId, ItemStack fish, ItemStack cookedVariant, Optional<Component> displayName, TextColor color, int maxPopulation, int maxRoe, int reproductionRate, List<PondQuest> quests, List<PondDrop> pondDrops) implements AbstractPond {
+public record Pond(Item fish, Item cookedVariant, Fluid pondFluid, Optional<Component> displayName, TextColor color,
+                   int maxPopulation, int maxRoe, int reproductionRate, List<PondQuest> quests,
+                   List<PondDrop> pondDrops) implements AbstractPond {
     public static final Codec<Pond> CODEC = RecordCodecBuilder.create(inst -> inst
             .group(
-                    Codec.STRING.fieldOf("pond_id").forGetter(Pond::pondId),
-                    ItemStack.CODEC.fieldOf("fish").forGetter(Pond::fish),
-                    ItemStack.CODEC.fieldOf("cooked_variant").orElse(Items.COAL.getDefaultInstance()).forGetter(Pond::cookedVariant),
+                    BuiltInRegistries.ITEM.byNameCodec().fieldOf("fish").forGetter(Pond::fish),
+                    BuiltInRegistries.ITEM.byNameCodec().fieldOf("cooked_variant").orElse(Items.COAL).forGetter(Pond::cookedVariant),
+                    BuiltInRegistries.FLUID.byNameCodec().fieldOf("pond_fluid").orElse(Fluids.WATER).forGetter(Pond::pondFluid),
                     ComponentSerialization.CODEC.optionalFieldOf("name").forGetter(Pond::displayName),
                     TextColor.CODEC.fieldOf("color").forGetter(Pond::color),
                     Codec.intRange(0, 20).fieldOf("max_population").orElse(10).forGetter(Pond::maxPopulation),
@@ -45,16 +51,15 @@ public record Pond(String pondId, ItemStack fish, ItemStack cookedVariant, Optio
             .apply(inst, Pond::new));
 
     public Pond(Pond other) {
-        this(other.pondId, other.fish, other.cookedVariant, other.displayName, other.color, other.maxPopulation, other.maxRoe, other.reproductionRate, other.quests, other.pondDrops);
+        this(other.fish, other.cookedVariant, other.pondFluid, other.displayName, other.color, other.maxPopulation, other.maxRoe, other.reproductionRate, other.quests, other.pondDrops);
     }
 
     @Override
     public Component name() {
-        return this.displayName.orElse(this.fish().getHoverName()).copy().withStyle(s -> s.withColor(this.color()));
+        return this.displayName.orElse(this.fish().getDefaultInstance().getHoverName()).copy().withStyle(s -> s.withColor(this.color()));
     }
 
     public void validate(ResourceLocation key) {
-        Preconditions.checkNotNull(this.pondId, "Invalid pondId");
         Preconditions.checkNotNull(this.fish, "Invalid fish!");
     }
 

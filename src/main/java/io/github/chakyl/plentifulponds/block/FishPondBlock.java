@@ -2,7 +2,10 @@ package io.github.chakyl.plentifulponds.block;
 
 import com.mojang.serialization.MapCodec;
 import dev.shadowsoffire.placebo.block_entity.TickingEntityBlock;
+import dev.shadowsoffire.placebo.menu.MenuUtil;
+import io.github.chakyl.plentifulponds.PlentifulPonds;
 import io.github.chakyl.plentifulponds.blockentity.FishPondBlockEntity;
+import io.github.chakyl.plentifulponds.screen.FishPondMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -48,16 +51,23 @@ public class FishPondBlock extends HorizontalDirectionalBlock implements Ticking
     }
 
     @Override
+    protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        return MenuUtil.openGui(player, pos, FishPondMenu::new);
+    }
+
+    @Override
     protected @NotNull ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         BlockEntity entity = level.getBlockEntity(pos);
         if (hand == InteractionHand.MAIN_HAND && entity instanceof FishPondBlockEntity fishPondBlockEntity) {
             if (player.isCrouching() && stack.isEmpty()) {
                 fishPondBlockEntity.handleFishExtraction();
+                return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
             } if (!stack.isEmpty()) {
                 fishPondBlockEntity.handleFishInsertion(stack);
+                return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
             }
             fishPondBlockEntity.handlePondHarvest();
-            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }

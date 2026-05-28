@@ -8,8 +8,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,13 +46,17 @@ public class PondRegistry extends DynamicRegistry<Pond> {
     @Override
     protected void validateItem(ResourceLocation key, Pond pond) {
         pond.validate(key);
-        if (this.pondTypes.containsKey(pond.pondId())) {
+        if (this.pondTypes.containsKey(pond.fish().getDescriptionId())) {
             String msg = "Attempted to register two ponds (%s and %s) for pond IDs %s!";
-            throw new UnsupportedOperationException(String.format(msg, key, this.getKey(this.pondTypes.get(pond.pondId())), pond.pondId()));
+            throw new UnsupportedOperationException(String.format(msg, key, this.getKey(this.pondTypes.get(pond.fish().getDescriptionId())), pond.fish()));
         }
-        this.pondTypes.put(pond.pondId(), pond);
+        this.pondTypes.put(pond.fish().getDescriptionId(), pond);
     }
 
+    public Pond getForItem(Item item) {
+        if (item == null) return null;
+        return this.pondTypes.get(item.getDescriptionId());
+    }
 
     @Override
     public Map<ResourceLocation, JsonElement> prepare(ResourceManager pResourceManager, ProfilerFiller pProfiler) {

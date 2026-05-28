@@ -1,78 +1,34 @@
 {
-  "multipart": [
-    { "apply": { "model": "society:block/fish_pond_particle" } },
-    {
-      "when": { "facing": "north", "upgraded": false },
-      "apply": { "model": "society:block/fish_pond", "y": 0, "uvlock": false }
+  "variants": {
+    "facing=east,upgraded=false": {
+      "model": "plentifulponds:block/fish_pond",
+      "y": 90
     },
-    {
-      "when": { "facing": "east", "upgraded": false },
-      "apply": {
-        "model": "society:block/fish_pond",
-        "y": 90,
-        "uvlock": false
-      }
+    "facing=east,upgraded=true": {
+      "model": "plentifulponds:block/fish_pond_upgraded",
+      "y": 90
     },
-    {
-      "when": { "facing": "south", "upgraded": false },
-      "apply": {
-        "model": "society:block/fish_pond",
-        "y": 180,
-        "uvlock": false
-      }
+    "facing=north,upgraded=false": {
+      "model": "plentifulponds:block/fish_pond"
     },
-    {
-      "when": { "facing": "west", "upgraded": false },
-      "apply": {
-        "model": "society:block/fish_pond",
-        "y": -90,
-        "uvlock": false
-      }
+    "facing=north,upgraded=true": {
+      "model": "plentifulponds:block/fish_pond_upgraded"
     },
-    {
-      "when": { "facing": "north", "upgraded": true },
-      "apply": {
-        "model": "society:block/fish_pond_upgraded",
-        "y": 0,
-        "uvlock": false
-      }
+    "facing=south,upgraded=false": {
+      "model": "plentifulponds:block/fish_pond",
+      "y": 180
     },
-    {
-      "when": { "facing": "east", "upgraded": true },
-      "apply": {
-        "model": "society:block/fish_pond_upgraded",
-        "y": 90,
-        "uvlock": false
-      }
+    "facing=south,upgraded=true": {
+      "model": "plentifulponds:block/fish_pond_upgraded",
+      "y": 180
     },
-    {
-      "when": { "facing": "south", "upgraded": true },
-      "apply": {
-        "model": "society:block/fish_pond_upgraded",
-        "y": 180,
-        "uvlock": false
-      }
+    "facing=west,upgraded=false": {
+      "model": "plentifulponds:block/fish_pond",
+      "y": 270
     },
-    {
-      "when": { "facing": "west", "upgraded": true },
-      "apply": {
-        "model": "society:block/fish_pond_upgraded",
-        "y": -90,
-        "uvlock": false
-      }
-    },
-    {
-      "when": { "mature": true },
-      "apply": { "model": "society:block/pond_done" }
-    },
-    {
-      "when": { "quest": true, "mature": false },
-      "apply": { "model": "society:block/pond_quest" }
-    },
-
-    {
-      "when": { "valid": false },
-      "apply": { "model": "society:block/error" }
+    "facing=west,upgraded=true": {
+      "model": "plentifulponds:block/fish_pond_upgraded",
+      "y": 270
     }
-  ]
+  }
 }

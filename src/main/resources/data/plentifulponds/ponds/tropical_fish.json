@@ -1,9 +1,6 @@
 {
-  "pond_id": "tropical_fish",
   "color": "#f17226",
-  "fish": {
-    "id": "minecraft:tropical_fish"
-  },
+  "fish": "minecraft:tropical_fish",
   "max_population": 10,
   "max_roe": 2,
   "reproduction_rate": 2,

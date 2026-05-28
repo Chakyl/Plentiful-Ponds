@@ -12,7 +12,7 @@ public class PondRecipe {
     final List<PondDrop> drops;
 
     public PondRecipe(Pond pond) {
-        this.fish = pond.fish().copy();
+        this.fish = pond.fish().getDefaultInstance();
         this.roe = pond.getRoeItem().copy();
         this.drops = pond.pondDrops();
     }
