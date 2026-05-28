@@ -7,11 +7,8 @@ import io.github.chakyl.plentifulponds.PlentifulPonds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 
-import javax.annotation.Nullable;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,6 +48,11 @@ public class PondRegistry extends DynamicRegistry<Pond> {
             throw new UnsupportedOperationException(String.format(msg, key, this.getKey(this.pondTypes.get(pond.fish().getDescriptionId())), pond.fish()));
         }
         this.pondTypes.put(pond.fish().getDescriptionId(), pond);
+    }
+
+    public boolean isPondFish(Item item) {
+        if (item == null) return false;
+        return this.pondTypes.get(item.getDescriptionId()) != null;
     }
 
     public Pond getForItem(Item item) {

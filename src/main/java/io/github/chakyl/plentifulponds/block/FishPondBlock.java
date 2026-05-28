@@ -8,6 +8,7 @@ import io.github.chakyl.plentifulponds.blockentity.FishPondBlockEntity;
 import io.github.chakyl.plentifulponds.screen.FishPondMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -25,6 +26,8 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
 
 public class FishPondBlock extends HorizontalDirectionalBlock implements TickingEntityBlock {
     public static final BooleanProperty UPGRADED = BooleanProperty.create("upgraded");
@@ -59,14 +62,27 @@ public class FishPondBlock extends HorizontalDirectionalBlock implements Ticking
     protected @NotNull ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         BlockEntity entity = level.getBlockEntity(pos);
         if (hand == InteractionHand.MAIN_HAND && entity instanceof FishPondBlockEntity fishPondBlockEntity) {
+            // TODO: Quest submission
             if (player.isCrouching() && stack.isEmpty()) {
-                fishPondBlockEntity.handleFishExtraction();
+                ItemStack extractedFish = fishPondBlockEntity.handleFishExtraction();
+                if (!extractedFish.isEmpty()) {
+                    player.addItem(extractedFish);
+                    player.swing(hand);
+                }
                 return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
             } if (!stack.isEmpty()) {
-                fishPondBlockEntity.handleFishInsertion(stack);
+                fishPondBlockEntity.handleFishInsertion(player, hand, stack);
                 return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
             }
-            fishPondBlockEntity.handlePondHarvest();
+            Collection<ItemStack> drops = fishPondBlockEntity.handlePondHarvest();
+            if (drops != null && !drops.isEmpty()) {
+                for (ItemStack drop : drops) {
+                    Block.popResourceFromFace(level, pos, state.getValue(FACING), drop.copy());
+                }
+                player.swing(hand);
+                level.playSound(null, pos, SoundEvents.CHICKEN_EGG, SoundSource.BLOCKS, 1.0F, 0.9F);
+                return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+            }
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);

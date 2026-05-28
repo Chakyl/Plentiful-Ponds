@@ -1,8 +1,8 @@
 package io.github.chakyl.plentifulponds.JEI;
 
+import io.github.chakyl.plentifulponds.ModElements;
 import io.github.chakyl.plentifulponds.PlentifulPonds;
 import io.github.chakyl.plentifulponds.data.codec.PondDrop;
-import io.github.chakyl.plentifulponds.ModElements;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -28,8 +28,8 @@ public class FishPondCategory implements IRecipeCategory<PondRecipe> {
 
     public FishPondCategory(IGuiHelper guiHelper) {
         this.background = guiHelper.createBlankDrawable(177, 61);
-        this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModElements.Items.SEA_BISCUIT.value()));
-        this.name = Component.translatable(ModElements.Items.SEA_BISCUIT.value().getDescriptionId());
+        this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModElements.Items.FISH_POND.value()));
+        this.name = Component.translatable(ModElements.Items.FISH_POND.value().getDescriptionId());
     }
 
     @Override
@@ -55,9 +55,16 @@ public class FishPondCategory implements IRecipeCategory<PondRecipe> {
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, PondRecipe recipe, IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.INPUT, 2, 2).addItemStack(recipe.fish).setStandardSlotBackground();;
+        builder.addSlot(RecipeIngredientRole.INPUT, 2, 2).addItemStack(recipe.fish).addRichTooltipCallback((view, tooltip) -> {
+            if (recipe.reproductionRate == 1) {
+                tooltip.add(Component.translatable("jei.plentifulponds.fish_farming.reproduction", recipe.reproductionRate).withStyle(ChatFormatting.AQUA));
+            } else {
+                tooltip.add(Component.translatable("jei.plentifulponds.fish_farming.reproduction_plural", recipe.reproductionRate).withStyle(ChatFormatting.AQUA));
+            }
+            tooltip.add(Component.translatable("jei.plentifulponds.fish_farming.max_population", recipe.maxPopulation).withStyle(ChatFormatting.GOLD));
+        }).setStandardSlotBackground();
         int slotSize = 21;
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 26, 2).addItemStack(recipe.roe).setStandardSlotBackground();;
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 26, 2).addItemStack(recipe.roe).setStandardSlotBackground();
         for (int i = 1; i < recipe.drops.size() + 1; i++) {
             int line = i > 6 ? 28 : 2;
             PondDrop drop = recipe.drops.get(i - 1);

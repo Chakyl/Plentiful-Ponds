@@ -144,8 +144,10 @@ dependencies {
     // implementation files("libs/coolmod-${mc_version}-${coolmod_version}.jar")
     implementation "curse.maven:placebo-283644:6926281"
     implementation "curse.maven:jei-238222:7420587"
+    implementation "curse.maven:jade-324717:7545219"
 
-    jarJar(implementation("curse.maven:fancy-tab-sections-1537163:8074204"))
+
+//    jarJar(implementation("curse.maven:fancy-tab-sections-1537163:8074204"))
     // Example project dependency using a sister or child project:
     // implementation project(":myproject")
 

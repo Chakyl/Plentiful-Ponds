@@ -42,9 +42,9 @@ public record Pond(Item fish, Item cookedVariant, Fluid pondFluid, Optional<Comp
                     BuiltInRegistries.FLUID.byNameCodec().fieldOf("pond_fluid").orElse(Fluids.WATER).forGetter(Pond::pondFluid),
                     ComponentSerialization.CODEC.optionalFieldOf("name").forGetter(Pond::displayName),
                     TextColor.CODEC.fieldOf("color").forGetter(Pond::color),
-                    Codec.intRange(0, 20).fieldOf("max_population").orElse(10).forGetter(Pond::maxPopulation),
-                    Codec.intRange(0, Integer.MAX_VALUE / 20).fieldOf("max_roe").orElse(1).forGetter(Pond::maxRoe),
-                    Codec.intRange(0, Integer.MAX_VALUE / 20).fieldOf("reproduction_rate").orElse(1).forGetter(Pond::reproductionRate),
+                    Codec.intRange(1, 20).fieldOf("max_population").orElse(10).forGetter(Pond::maxPopulation),
+                    Codec.intRange(1, Integer.MAX_VALUE / 20).fieldOf("max_roe").orElse(1).forGetter(Pond::maxRoe),
+                    Codec.intRange(1, Integer.MAX_VALUE / 20).fieldOf("reproduction_rate").orElse(1).forGetter(Pond::reproductionRate),
                     PondQuest.LIST_CODEC.fieldOf("quests").forGetter(Pond::quests),
                     PondDrop.LIST_CODEC.fieldOf("drops").forGetter(Pond::pondDrops)
             )
