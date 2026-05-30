@@ -34,5 +34,10 @@
   "jade.plentifulponds.fish_pond.no_fish": "Empty fish pond!",
   "jade.plentifulponds.fish_pond.header": "%s %s/%s",
   "jade.plentifulponds.fish_pond.insert": "Right click a fish to set the pond type",
-  "block.plentifulponds.fish_pond.not_same": "Fish: We don't like to share with other kinds of fish..."
+  "block.plentifulponds.fish_pond.not_same": "Fish: We don't like that fish here...",
+  "block.plentifulponds.fish_pond.fish_quest": "Fish: We'd feel more at home with %s of these:",
+  "block.plentifulponds.fish_pond.fish_quest.complete": "Fish: This really makes us feel at home!",
+  "block.plentifulponds.fish_pond.fish_quest.partial": "Fish: Thanks but we need %s more of these to be happy...",
+  "block.plentifulponds.fish_pond.no_alt": "Fish: We won't change our mind on this one!",
+  "block.plentifulponds.fish_pond.fish_quest_changed": "Fish: Fine sure! We'll take %s of these:"
 }

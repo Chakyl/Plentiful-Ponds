@@ -2,6 +2,7 @@ package io.github.chakyl.plentifulponds.events;
 
 import dev.shadowsoffire.placebo.reload.DynamicHolder;
 import io.github.chakyl.plentifulponds.PlentifulPonds;
+import io.github.chakyl.plentifulponds.blockentity.renderer.FishPondBlockEntityRenderer;
 import io.github.chakyl.plentifulponds.data.Pond;
 import io.github.chakyl.plentifulponds.item.AgedRoeItem;
 import io.github.chakyl.plentifulponds.item.RoeItem;
@@ -11,6 +12,7 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
@@ -52,4 +54,11 @@ public class ClientModEvents {
         }, ModElements.Items.AGED_ROE.value());
     }
 
+    @SubscribeEvent
+    public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(
+                ModElements.BlockEntities.FISH_POND,
+                FishPondBlockEntityRenderer::new
+        );
+    }
 }

@@ -61,7 +61,7 @@ public class FishPondBlock extends HorizontalDirectionalBlock implements Ticking
     @Override
     protected @NotNull ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         BlockEntity entity = level.getBlockEntity(pos);
-        if (hand == InteractionHand.MAIN_HAND && entity instanceof FishPondBlockEntity fishPondBlockEntity) {
+        if (!level.isClientSide && hand == InteractionHand.MAIN_HAND && entity instanceof FishPondBlockEntity fishPondBlockEntity) {
             // TODO: Quest submission
             if (player.isCrouching() && stack.isEmpty()) {
                 ItemStack extractedFish = fishPondBlockEntity.handleFishExtraction();
@@ -71,6 +71,10 @@ public class FishPondBlock extends HorizontalDirectionalBlock implements Ticking
                 }
                 return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
             } if (!stack.isEmpty()) {
+                if (fishPondBlockEntity.isQuestActive()) {
+                    fishPondBlockEntity.handleQuestSubmission(player, hand, stack);
+                    return ItemInteractionResult.CONSUME;
+                }
                 fishPondBlockEntity.handleFishInsertion(player, hand, stack);
                 return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
             }

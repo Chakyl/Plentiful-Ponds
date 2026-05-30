@@ -8,6 +8,7 @@ import io.github.chakyl.plentifulponds.data.PondRegistry;
 import io.github.chakyl.plentifulponds.data.codec.PondDrop;
 import io.github.chakyl.plentifulponds.data.codec.PondQuest;
 import io.github.chakyl.plentifulponds.item.RoeItem;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -15,7 +16,9 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -74,6 +77,7 @@ public class FishPondBlockEntity extends BlockEntity implements TickingBlockEnti
                 Pond pond = this.getPond();
                 if (this.population > 1) {
                     this.hasOutput = true;
+                    this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 3);
                 }
                 if (this.maxPopulation != pond.maxPopulation() && !this.questActive && population == maxPopulation) {
                     chooseFishPondQuest(level, pond);
@@ -127,6 +131,20 @@ public class FishPondBlockEntity extends BlockEntity implements TickingBlockEnti
         }
         return pond.maxPopulation();
     }
+    private int getQuestMaxPopulation() {
+        Pond pond = this.getPond();
+        if (pond == null) return 0;
+        boolean chooseNext = false;
+        if (!pond.quests().isEmpty()) {
+            for (PondQuest quest : pond.quests()) {
+                if (quest.population() == this.maxPopulation) {
+                    chooseNext = true;
+                } else if (chooseNext) return quest.population();
+            }
+            return pond.quests().getFirst().population();
+        }
+        return pond.maxPopulation();
+    }
 
     private void chooseFishPondQuest(Level level, Pond pond) {
         this.questActive = true;
@@ -136,6 +154,41 @@ public class FishPondBlockEntity extends BlockEntity implements TickingBlockEnti
             if (quest.population() == this.maxPopulation) {
                 this.questId = Mth.randomBetweenInclusive(level.getRandom(), 0, quest.requestedItems().size() - 1);
                 return;
+            }
+        }
+    }
+
+    public ItemStack getRequestedItems() {
+        Pond pond = this.getPond();
+        for (PondQuest quest : pond.quests()) {
+            if (quest.population() == this.maxPopulation) {
+                if (quest.requestedItems().size() < this.questId) {
+                    return quest.requestedItems().get(quest.requestedItems().size() - 1).copy();
+                }
+                return quest.requestedItems().get(this.questId).copy();
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
+    public void handleQuestSubmission(Player player, InteractionHand hand, ItemStack stack) {
+        ItemStack questContent = getRequestedItems();
+        if (!stack.isEmpty() && !questContent.isEmpty() && stack.getItem() == questContent.getItem()) {
+//            TODO: pond_house_five int checkedCount = player.stages.has("pond_house_five")
+//                    ? Math.round(questContent.count / 2)
+//                    : questContent.count;
+            int checkedCount = questContent.getCount();
+            if (stack.getCount() >= checkedCount) {
+
+                sendParticles(ParticleTypes.WAX_OFF, level, this.getBlockPos());
+                this.questActive = false;
+                this.questId = -1;
+                this.maxPopulation = this.getQuestMaxPopulation();
+                this.setChanged();
+                player.sendSystemMessage(Component.translatable("block.plentifulponds.fish_pond.fish_quest.complete").withStyle(ChatFormatting.GREEN));
+                if (!player.isCreative()) stack.shrink(checkedCount);
+            } else {
+              player.sendSystemMessage(Component.translatable("block.plentifulponds.fish_pond.fish_quest.partial", checkedCount - stack.getCount()).withStyle(ChatFormatting.RED));
             }
         }
     }
@@ -221,6 +274,8 @@ public class FishPondBlockEntity extends BlockEntity implements TickingBlockEnti
             }
         }
         this.hasOutput = false;
+        this.setChanged();
+        this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 3);
         return drops;
     }
 
@@ -266,7 +321,27 @@ public class FishPondBlockEntity extends BlockEntity implements TickingBlockEnti
         saveAdditional(tag, registries);
         return tag;
     }
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
 
+    //    @Override
+//    public CompoundTag getUpdateTag(HolderLookup.Provider regs) {
+//        CompoundTag tag = super.getUpdateTag(regs);
+//        tag.putBoolean("has_output", this.hasOutput);
+//        return tag;
+//    }
+//    @Override
+//    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
+//        super.handleUpdateTag(tag, registries);
+//        if (tag.contains("has_output")) {
+//            this.hasOutput = tag.getBoolean("has_output");
+//            if (this.level != null && this.level.isClientSide) {
+//                this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 3);
+//            }
+//        }
+//    }
     public boolean hasFish() {
         return this.fishType != null;
     }
@@ -331,4 +406,5 @@ public class FishPondBlockEntity extends BlockEntity implements TickingBlockEnti
     public void registerSlots(Consumer<DataSlot> consumer) {
         this.data.register(consumer);
     }
+
 }
