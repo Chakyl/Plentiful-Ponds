@@ -21,8 +21,8 @@ import static io.github.chakyl.plentifulponds.PlentifulPonds.loc;
 
 public class FishPondScreen extends PlaceboContainerScreen<FishPondMenu> implements DrawsOnLeft {
 
-    public static final int WIDTH = 192;
-    public static final int HEIGHT = 144;
+    public static final int WIDTH = 156;
+    public static final int HEIGHT = 168;
     public static final ResourceLocation BASE = loc("textures/gui/fish_pond_gui.png");
 
     private Pond pond = null;
@@ -34,7 +34,7 @@ public class FishPondScreen extends PlaceboContainerScreen<FishPondMenu> impleme
         this.imageHeight = HEIGHT;
         this.imageWidth = WIDTH;
         RandomSource random = RandomSource.create();
-        flavorText = Mth.randomBetweenInclusive(random,0, 5);
+        flavorText = Mth.randomBetweenInclusive(random, 0, 5);
     }
 
     @Override
@@ -88,19 +88,21 @@ public class FishPondScreen extends PlaceboContainerScreen<FishPondMenu> impleme
 
         if (this.pond != null) {
             ItemStack fish = this.menu.getFishType().getDefaultInstance();
-            // TODO center text in box
-            gfx.drawString(this.font, Component.translatable("gui.plentifulponds.pond.name", pond.name().getString()), left + 90, top + 8, 0xFFFFFF, true);
+            Component titleComponent = Component.translatable("gui.plentifulponds.pond.name", pond.name().getString());
+            int boxWidth = 109;
 
+            int centeredX = left + 11 + ((boxWidth - this.font.width(titleComponent)) / 2);
+
+            gfx.drawString(this.font, titleComponent, centeredX, top + 6, 0xFFFFFF, true);
             // Fishies!!!
 
             int population = this.menu.getPopulation();
             int maxPopulation = this.menu.getMaxPopulation();
 
-            // TODO center text in box
-            gfx.drawString(this.font, Component.translatable("gui.plentifulponds.pond.population", population, maxPopulation), left + 90 , top + 28, 0xFFFFFF, false);
+            gfx.drawString(this.font, Component.translatable("gui.plentifulponds.pond.population", population, maxPopulation), left + 60, top + 27, 0xFFFFFF, false);
 
-            final int fishGridLeft = left + 90;
-            final int fishGridTop = top + 40;
+            int fishGridLeft = left + 20;
+            int fishGridTop = top + 45;
             boolean smallFishies = maxPopulation > 10;
             int maxFishPerRow = smallFishies ? 10 : 5;
             int slotSize = smallFishies ? 9 : 18;
@@ -110,6 +112,7 @@ public class FishPondScreen extends PlaceboContainerScreen<FishPondMenu> impleme
             int fishInSecondRow = maxPopulation % maxFishPerRow;
             if (fishInSecondRow == 0) {
                 fishInSecondRow = maxFishPerRow;
+                fishGridTop = top + 53;
             }
 
             for (int i = 0; i < maxPopulation; i++) {
@@ -139,20 +142,17 @@ public class FishPondScreen extends PlaceboContainerScreen<FishPondMenu> impleme
             }
             RenderSystem.setShaderColor(originalColor[0], originalColor[1], originalColor[2], originalColor[3]);
             // Quests/FlavorText
-            // TODO center text in box
             if (this.menu.isQuestActive()) {
                 for (PondQuest quest : pond.quests()) {
                     if (quest.population() == this.menu.getMaxPopulation()) {
                         ItemStack questItem = quest.requestedItems().get(this.menu.getQuestId());
-                        gfx.renderItem(questItem, left + 90 , top + 119);
-                        gfx.drawString(this.font, questItem.getHoverName(), left + 90 + 17 , top + 125, 0xFFFFFF, false);
+                        gfx.renderItem(questItem, left + 90, top + 119);
+                        gfx.drawString(this.font, questItem.getHoverName(), left + 90 + 17, top + 125, 0xFFFFFF, false);
                         break;
                     }
                 }
-
-
             } else {
-                gfx.drawWordWrap(this.font, Component.translatable("gui.plentifulponds.pond.flavor" + flavorText, population, maxPopulation), left + 90 , top + 119, 104, 0xFFFFFF);
+                gfx.drawWordWrap(this.font, Component.translatable("gui.plentifulponds.pond.flavor" + flavorText, population, maxPopulation), left + 28, top + 106, 92, 0xFFFFFF);
             }
         }
     }

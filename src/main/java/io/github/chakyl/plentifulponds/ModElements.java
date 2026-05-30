@@ -15,6 +15,8 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
@@ -59,7 +61,10 @@ public class ModElements {
         private static void bootstrap() {
         }
     }
+    public static class Tags {
+        public static final TagKey<Block> POND_WATER = TagKey.create(Registries.BLOCK, loc("fish_pond_water"));
 
+    }
 
     public static class Menus {
         public static final MenuType<FishPondMenu> FISH_POND = R.menuWithPos("fish_pond", FishPondMenu::new);

@@ -7,7 +7,9 @@ import io.github.chakyl.plentifulponds.data.Pond;
 import io.github.chakyl.plentifulponds.item.AgedRoeItem;
 import io.github.chakyl.plentifulponds.item.RoeItem;
 import io.github.chakyl.plentifulponds.ModElements;
+import io.github.chakyl.plentifulponds.model.ExclamationModel;
 import io.github.chakyl.plentifulponds.screen.FishPondScreen;
+import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -60,5 +62,14 @@ public class ClientModEvents {
                 ModElements.BlockEntities.FISH_POND,
                 FishPondBlockEntityRenderer::new
         );
+    }
+
+    public static final ModelLayerLocation EXCLAMATION_LAYER = new ModelLayerLocation(
+            loc("exclamation"), "main"
+    );
+
+    @SubscribeEvent
+    public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(EXCLAMATION_LAYER, ExclamationModel::createBodyLayer);
     }
 }

@@ -3,6 +3,7 @@ package io.github.chakyl.plentifulponds.blockentity;
 import dev.shadowsoffire.placebo.block_entity.TickingBlockEntity;
 import dev.shadowsoffire.placebo.menu.SimpleDataSlots;
 import io.github.chakyl.plentifulponds.ModElements;
+import io.github.chakyl.plentifulponds.block.FishPondBlock;
 import io.github.chakyl.plentifulponds.data.Pond;
 import io.github.chakyl.plentifulponds.data.PondRegistry;
 import io.github.chakyl.plentifulponds.data.codec.PondDrop;
@@ -16,7 +17,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -33,6 +33,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 
 import java.util.Collection;
 import java.util.function.Consumer;
@@ -47,7 +49,7 @@ public class FishPondBlockEntity extends BlockEntity implements TickingBlockEnti
     protected int questId;
     protected boolean questActive;
     protected boolean hasOutput;
-    protected boolean valid = false;
+    protected boolean valid = true;
 
     protected final SimpleDataSlots data = new SimpleDataSlots();
 
@@ -67,13 +69,21 @@ public class FishPondBlockEntity extends BlockEntity implements TickingBlockEnti
         long dayTime = level.dayTime();
         int morningModulo = (int) (dayTime % 24000);
         if (!hasFish()) return;
-        if (dayTime % 200 == 0) validatePondFluid();
+        if (dayTime % 20 == 0) {
+            boolean validResult = validatePond(level, pos, state);
+            if (this.valid != validResult) {
+                this.valid = validResult;
+                this.setChanged();
+                this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 3);
+                return;
+            }
+        }
 
         if (dayTime % 20 == 0 &&
                 morningModulo >= FISH_POND_DAY_TIME_TRIGGER &&
                 morningModulo < FISH_POND_DAY_TIME_TRIGGER + 20
         ) {
-            if (valid) {
+            if (this.valid) {
                 Pond pond = this.getPond();
                 if (this.population > 1) {
                     this.hasOutput = true;
@@ -107,9 +117,67 @@ public class FishPondBlockEntity extends BlockEntity implements TickingBlockEnti
         }
     }
 
-    private void validatePondFluid() {
-        // TODO: Deal with this shit
-        this.valid = true;
+    public boolean validatePond(Level level, BlockPos pos, BlockState state) {
+        BlockPos pondStart;
+        BlockPos pondEnd;
+        BlockPos adjacent1;
+        BlockPos adjacent2;
+        // Programming is my passion
+        switch (state.getValue(FishPondBlock.FACING)) {
+            case NORTH -> {
+                pondStart = pos.offset(1, 0, 4);
+                pondEnd = pos.offset(-1, 0, 1);
+                adjacent1 = pos.offset(1, 0, 0);
+                adjacent2 = pos.offset(-1, 0, 0);
+            }
+            case SOUTH -> {
+                pondStart = pos.offset(-1, 0, -4);
+                pondEnd = pos.offset(1, 0, -1);
+                adjacent1 = pos.offset(1, 0, 0);
+                adjacent2 = pos.offset(-1, 0, 0);
+            }
+            case EAST -> {
+                pondStart = pos.offset(-1, 0, 1);
+                pondEnd = pos.offset(-4, 0, -1);
+                adjacent1 = pos.offset(0, 0, 1);
+                adjacent2 = pos.offset(0, 0, -1);
+            }
+            case WEST -> {
+                pondStart = pos.offset(1, 0, -1);
+                pondEnd = pos.offset(4, 0, 1);
+                adjacent1 = pos.offset(0, 0, 1);
+                adjacent2 = pos.offset(0, 0, -1);
+            }
+            default -> {
+                return false;
+            }
+        }
+        if (isPondAt(level, adjacent1) || isPondAt(level, adjacent2)) return false;
+        Fluid pondWater = Fluids.WATER;
+        if (this.fishType != null) pondWater = this.getPond().pondFluid();
+        int fluidAmount = 0;
+        boolean isWater = pondWater.isSame(Fluids.WATER);
+
+        for (BlockPos scanPos : BlockPos.betweenClosed(pondStart, pondEnd)) {
+            if (!level.isLoaded(scanPos)) {
+                return false;
+            }
+            BlockState scanState = level.getBlockState(scanPos);
+            if (scanState.getFluidState().getType().isSame(pondWater)) {
+                fluidAmount++;
+            } else if (isWater && scanState.is(ModElements.Tags.POND_WATER)) {
+                fluidAmount++;
+            }
+        }
+
+        return fluidAmount == 12;
+    }
+
+    private boolean isPondAt(Level level, BlockPos pos) {
+        if (!level.isLoaded(pos)) {
+            return false;
+        }
+        return level.getBlockState(pos).is(ModElements.Blocks.FISH_POND);
     }
 
     private void sendParticles(SimpleParticleType type, Level level, BlockPos pos) {
@@ -131,6 +199,7 @@ public class FishPondBlockEntity extends BlockEntity implements TickingBlockEnti
         }
         return pond.maxPopulation();
     }
+
     private int getQuestMaxPopulation() {
         Pond pond = this.getPond();
         if (pond == null) return 0;
@@ -141,7 +210,6 @@ public class FishPondBlockEntity extends BlockEntity implements TickingBlockEnti
                     chooseNext = true;
                 } else if (chooseNext) return quest.population();
             }
-            return pond.quests().getFirst().population();
         }
         return pond.maxPopulation();
     }
@@ -185,10 +253,11 @@ public class FishPondBlockEntity extends BlockEntity implements TickingBlockEnti
                 this.questId = -1;
                 this.maxPopulation = this.getQuestMaxPopulation();
                 this.setChanged();
+                this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 3);
                 player.sendSystemMessage(Component.translatable("block.plentifulponds.fish_pond.fish_quest.complete").withStyle(ChatFormatting.GREEN));
                 if (!player.isCreative()) stack.shrink(checkedCount);
             } else {
-              player.sendSystemMessage(Component.translatable("block.plentifulponds.fish_pond.fish_quest.partial", checkedCount - stack.getCount()).withStyle(ChatFormatting.RED));
+                player.sendSystemMessage(Component.translatable("block.plentifulponds.fish_pond.fish_quest.partial", checkedCount - stack.getCount()).withStyle(ChatFormatting.RED));
             }
         }
     }
@@ -228,15 +297,16 @@ public class FishPondBlockEntity extends BlockEntity implements TickingBlockEnti
                 this.nonNativeFish = 1;
                 this.population = 1;
                 this.maxPopulation = getInitialMaxPopulation();
-                stack.shrink(1);
+                if (!player.isCreative()) stack.shrink(1);
                 player.swing(hand);
                 this.setChanged();
+                this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 3);
                 this.level.playSound(null, pondPos.getX(), pondPos.getY(), pondPos.getZ(), SoundEvents.PLAYER_SPLASH, SoundSource.BLOCKS, 1.0f, 1.0f);
             } else if (this.population < this.maxPopulation) {
                 if (stack.is(this.fishType.asItem())) {
                     this.nonNativeFish++;
                     this.population++;
-                    stack.shrink(1);
+                    if (!player.isCreative()) stack.shrink(1);
                     player.swing(hand);
                     this.setChanged();
                     this.level.playSound(null, pondPos.getX(), pondPos.getY(), pondPos.getZ(), SoundEvents.PLAYER_SPLASH, SoundSource.BLOCKS, 1.0f, 1.0f);
@@ -321,27 +391,12 @@ public class FishPondBlockEntity extends BlockEntity implements TickingBlockEnti
         saveAdditional(tag, registries);
         return tag;
     }
+
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    //    @Override
-//    public CompoundTag getUpdateTag(HolderLookup.Provider regs) {
-//        CompoundTag tag = super.getUpdateTag(regs);
-//        tag.putBoolean("has_output", this.hasOutput);
-//        return tag;
-//    }
-//    @Override
-//    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
-//        super.handleUpdateTag(tag, registries);
-//        if (tag.contains("has_output")) {
-//            this.hasOutput = tag.getBoolean("has_output");
-//            if (this.level != null && this.level.isClientSide) {
-//                this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 3);
-//            }
-//        }
-//    }
     public boolean hasFish() {
         return this.fishType != null;
     }
@@ -396,6 +451,10 @@ public class FishPondBlockEntity extends BlockEntity implements TickingBlockEnti
 
     public boolean hasOutput() {
         return this.hasOutput;
+    }
+
+    public boolean isValid() {
+        return this.valid;
     }
 
     public Pond getPond() {

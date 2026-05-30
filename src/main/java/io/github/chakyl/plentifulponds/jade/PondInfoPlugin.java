@@ -13,7 +13,7 @@ import static io.github.chakyl.plentifulponds.PlentifulPonds.loc;
 
 @WailaPlugin
 public class PondInfoPlugin implements IWailaPlugin {
-    public static final ResourceLocation UID = loc("plentiful_ponds");
+    public static final ResourceLocation UID = loc("fish_pond");
     @Override
     public void register(IWailaCommonRegistration registration) {
         registration.registerBlockDataProvider(FishPondInfoComponentProvider.INSTANCE, FishPondBlockEntity.class);
