@@ -31,6 +31,15 @@
 
   "gui.plentifulponds.pond.name": "%s Pond",
   "gui.plentifulponds.pond.population": "Fish: %s/%s",
+  "gui.plentifulponds.pond.bring": "Bring %s",
+
+  "gui.plentifulponds.pond.flavor_quest0": "We need this to reach our true pondtential!",
+  "gui.plentifulponds.pond.flavor_quest1": "We should improve society somewhat.",
+  "gui.plentifulponds.pond.flavor_quest2": "We have a small request for you...",
+  "gui.plentifulponds.pond.flavor_quest3": "Trust us, we require this for the pond.",
+  "gui.plentifulponds.pond.flavor_quest4": "Could you do us a favor? Please?",
+  "gui.plentifulponds.pond.flavor_quest5": "Bring this to us. This is not a negotiation.",
+
   "gui.plentifulponds.pond.flavor0": "The pond is still... For now.",
   "gui.plentifulponds.pond.flavor1": "You hear the fish splashing around!",
   "gui.plentifulponds.pond.flavor2": "The fish are swimming around methodically.",
@@ -41,5 +50,16 @@
   "config.jade.plugin_plentifulponds.fish_pond": "Fish Pond",
   "jade.plentifulponds.fish_pond.no_fish": "Empty fish pond!",
   "jade.plentifulponds.fish_pond.header": "%s %s/%s",
-  "jade.plentifulponds.fish_pond.insert": "Right click a fish to set the pond type"
+  "jade.plentifulponds.fish_pond.insert": "Right click a fish to set the pond type",
+  "gui.tooltip.plentifulponds.pond.bring": "Request: %sx %s",
+  "gui.tooltip.plentifulponds.pond.bring_tutorial": "Right Click the Pond to submit",
+  "gui.tooltip.plentifulponds.pond.clear": "Clear pond type",
+  "gui.tooltip.plentifulponds.pond.clear_tutorial1": "Pond must be empty.",
+  "gui.tooltip.plentifulponds.pond.clear_tutorial2": "Sneak + Right Click on Pond to empty.",
+  "gui.tooltip.plentifulponds.pond.render": "Toggle fish icon on pond",
+  "gui.tooltip.plentifulponds.pond.reproduction": "Reproduction rate: Daily",
+  "gui.tooltip.plentifulponds.pond.reproduction_plural": "Reproduction rate: Every %s days",
+  "gui.tooltip.plentifulponds.pond.max_population": "Final max population: %s",
+  "gui.tooltip.plentifulponds.pond.max_roe": "Max roe: %s/day",
+  "gui.tooltip.plentifulponds.pond.fish_stats": "Fish: %s"
 }

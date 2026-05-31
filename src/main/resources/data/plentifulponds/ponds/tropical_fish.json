@@ -29,12 +29,44 @@
   ],
   "drops": [
     {
+      "min_population": 2,
+      "drop": {
+        "id": "minecraft:tube_coral_block",
+        "count": 4
+      },
+      "chance": 0.62
+    },
+    {
+      "min_population": 4,
+      "drop": {
+        "id": "minecraft:brain_coral_block",
+        "count": 4
+      },
+      "chance": 0.62
+    },
+    {
+      "min_population": 6,
+      "drop": {
+        "id": "minecraft:bubble_coral_block",
+        "count": 4
+      },
+      "chance": 0.62
+    },
+    {
       "min_population": 8,
       "drop": {
-        "id": "plentifulponds:aquamarine",
-        "count": 1
+        "id": "minecraft:fire_coral_block",
+        "count": 4
       },
-      "chance": 0.32
+      "chance": 0.62
+    },
+    {
+      "min_population": 10,
+      "drop": {
+        "id": "minecraft:tube_coral_block",
+        "count": 4
+      },
+      "chance": 0.62
     }
   ]
 }

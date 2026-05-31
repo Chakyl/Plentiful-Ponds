@@ -1,0 +1,71 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "crittersandcompanions"
+    }
+  ],
+  "name": "Koi",
+  "color": "#EF7639",
+  "fish": "crittersandcompanions:koi_fish",
+  "max_population": 10,
+  "max_roe": 1,
+  "reproduction_rate": 5,
+  "quests": [
+    {
+      "population": 3,
+      "requested_items": [
+        { "id": "minecraft:amethyst_shard", "count": 48 },
+        { "id": "minecraft:amethyst_block", "count": 16 }
+      ]
+    },
+    {
+      "population": 5,
+      "requested_items": [
+        { "id": "crittersandcompanions:pearl", "count": 1 },
+        { "id": "crittersandcompanions:clam", "count": 8 }
+      ]
+    },
+    {
+      "population": 7,
+      "requested_items": [
+        { "id": "minecraft:calibrated_sculk_sensor", "count": 8 },
+        { "id": "minecraft:large_amethyst_bud", "count": 16 }
+      ]
+    }
+  ],
+  "drops": [
+    {
+      "min_population": 4,
+      "drop": {
+        "id": "minecraft:amethyst_shard",
+        "count": 8
+      },
+      "chance": 0.54
+    },
+    {
+      "min_population": 6,
+      "drop": {
+        "id": "minecraft:medium_amethyst_bud",
+        "count": 4
+      },
+      "chance": 0.2
+    },
+    {
+      "min_population": 8,
+      "drop": {
+        "id": "minecraft:large_amethyst_bud",
+        "count": 4
+      },
+      "chance": 0.2
+    },
+    {
+      "min_population": 10,
+      "drop": {
+        "id": "minecraft:amethyst_cluster",
+        "count": 4
+      },
+      "chance": 0.2
+    }
+  ]
+}

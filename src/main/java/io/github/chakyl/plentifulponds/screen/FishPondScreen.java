@@ -5,6 +5,7 @@ import dev.shadowsoffire.placebo.screen.PlaceboContainerScreen;
 import dev.shadowsoffire.placebo.util.DrawsOnLeft;
 import io.github.chakyl.plentifulponds.data.Pond;
 import io.github.chakyl.plentifulponds.data.codec.PondQuest;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
@@ -16,6 +17,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static io.github.chakyl.plentifulponds.PlentifulPonds.loc;
 
@@ -66,7 +70,51 @@ public class FishPondScreen extends PlaceboContainerScreen<FishPondMenu> impleme
 
     @Override
     protected void renderTooltip(GuiGraphics gfx, int pX, int pY) {
+        // Fish Stats
+        if (this.isHovering(11,  24,  13, 13, pX, pY)) {
+            List<Component> txt = new ArrayList<>(4);
+            Pond pond = this.menu.getPond();
+            txt.add(Component.translatable("gui.tooltip.plentifulponds.pond.fish_stats", this.menu.getFishType().getDefaultInstance().getHoverName().getString()).withStyle(ChatFormatting.AQUA));
+            if (pond.reproductionRate() == 1) {
+                txt.add(Component.translatable("gui.tooltip.plentifulponds.pond.reproduction").withStyle(ChatFormatting.GRAY));
+            } else {
 
+                txt.add(Component.translatable("gui.tooltip.plentifulponds.pond.reproduction_plural", pond.reproductionRate()).withStyle(ChatFormatting.GRAY));
+            }
+            txt.add(Component.translatable("gui.tooltip.plentifulponds.pond.max_population", pond.maxPopulation()).withStyle(ChatFormatting.GRAY));
+            txt.add(Component.translatable("gui.tooltip.plentifulponds.pond.max_roe", pond.maxRoe()).withStyle(ChatFormatting.GRAY));
+            gfx.renderComponentTooltip(this.font, txt, pX, pY);
+        }
+        // Clear Pond
+        if (this.isHovering(137,  38,  20, 20, pX, pY)) {
+            List<Component> txt = new ArrayList<>(3);
+            txt.add(Component.translatable("gui.tooltip.plentifulponds.pond.clear").withStyle(ChatFormatting.RED));
+            txt.add(Component.translatable("gui.tooltip.plentifulponds.pond.clear_tutorial1").withStyle(ChatFormatting.GRAY));
+            txt.add(Component.translatable("gui.tooltip.plentifulponds.pond.clear_tutorial2").withStyle(ChatFormatting.GRAY));
+            gfx.renderComponentTooltip(this.font, txt, pX, pY);
+        }
+        // Fish Render
+        if (this.isHovering(137,  61,  20, 20, pX, pY)) {
+            List<Component> txt = new ArrayList<>(2);
+            txt.add(Component.translatable("gui.tooltip.plentifulponds.pond.render").withStyle(ChatFormatting.GREEN));
+            // TODO: Add enabled/disabled text
+            gfx.renderComponentTooltip(this.font, txt, pX, pY);
+        }
+        // Quest Tooltip
+        if (this.menu.isQuestActive() && this.isHovering(60, 142, 80, 21, pX, pY)) {
+            ItemStack questItem = this.getQuestItem();
+            if (this.isHovering(60 + (80 - 24), 142, 24, 21, pX, pY)) {
+                List<Component> txt = new ArrayList<>(getTooltipFromItem(this.minecraft, questItem));
+                gfx.renderComponentTooltip(this.font, txt, pX, pY);
+            } else {
+                List<Component> txt = new ArrayList<>(2);
+                txt.add(Component.translatable("gui.tooltip.plentifulponds.pond.bring", questItem.getCount(), questItem.getHoverName()).withStyle(ChatFormatting.GOLD));
+                txt.add(Component.translatable("gui.tooltip.plentifulponds.pond.bring_tutorial").withStyle(ChatFormatting.GRAY));
+                gfx.renderComponentTooltip(this.font, txt, pX, pY);
+            }
+        }
+
+        super.renderTooltip(gfx, pX, pY);
     }
 
     @Override
@@ -143,17 +191,25 @@ public class FishPondScreen extends PlaceboContainerScreen<FishPondMenu> impleme
             RenderSystem.setShaderColor(originalColor[0], originalColor[1], originalColor[2], originalColor[3]);
             // Quests/FlavorText
             if (this.menu.isQuestActive()) {
-                for (PondQuest quest : pond.quests()) {
-                    if (quest.population() == this.menu.getMaxPopulation()) {
-                        ItemStack questItem = quest.requestedItems().get(this.menu.getQuestId());
-                        gfx.renderItem(questItem, left + 90, top + 119);
-                        gfx.drawString(this.font, questItem.getHoverName(), left + 90 + 17, top + 125, 0xFFFFFF, false);
-                        break;
-                    }
-                }
+                gfx.drawWordWrap(this.font, Component.translatable("gui.plentifulponds.pond.flavor_quest" + flavorText), left + 26, top + 100, 92, 0xFFFFFF);
+                gfx.blit(BASE, left + 60, top + 142, 0, 176, 80, 21, 256, 256);
+
+                ItemStack questItem = this.getQuestItem();
+                gfx.renderItem(questItem, left + 114 + (questItem.getCount() > 9 ? 4 : 0), top + 144);
+                gfx.drawString(this.font, Component.translatable("gui.plentifulponds.pond.bring", questItem.getCount()), left + 60 + 15, top + 148, 0xFFFFFF, true);
+
             } else {
-                gfx.drawWordWrap(this.font, Component.translatable("gui.plentifulponds.pond.flavor" + flavorText, population, maxPopulation), left + 28, top + 106, 92, 0xFFFFFF);
+                gfx.drawWordWrap(this.font, Component.translatable("gui.plentifulponds.pond.flavor" + flavorText), left + 26, top + 100, 92, 0xFFFFFF);
             }
         }
+    }
+
+    private ItemStack getQuestItem() {
+        for (PondQuest quest : pond.quests()) {
+            if (quest.population() == this.menu.getMaxPopulation()) {
+                return quest.requestedItems().get(this.menu.getQuestId());
+            }
+        }
+        return ItemStack.EMPTY;
     }
 }

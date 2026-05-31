@@ -25,7 +25,7 @@ public class PlentifulPonds {
     public void setup(FMLCommonSetupEvent e) {
         e.enqueueWork(() -> {
             e.enqueueWork(() -> {
-                TabFillingRegistry.register(ModElements.Tabs.TAB_KEY, ModElements.Items.FISH_POND, ModElements.Items.SEA_BISCUIT, ModElements.Items.AQUAMARINE, ModElements.Items.ROE, ModElements.Items.AGED_ROE);
+                TabFillingRegistry.register(ModElements.Tabs.TAB_KEY, ModElements.Items.FISH_POND, ModElements.Items.SEA_BISCUIT, ModElements.Items.ROE, ModElements.Items.AGED_ROE);
             });
         });
         PondRegistry.INSTANCE.registerToBus();

@@ -15,13 +15,11 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -52,8 +50,6 @@ public class ModElements {
 
     public static class Items {
         public static final Holder<Item> FISH_POND = R.blockItem("fish_pond", Blocks.FISH_POND);
-
-        public static final Holder<Item> AQUAMARINE = R.item("aquamarine", () -> new Item(new Item.Properties().stacksTo(64).rarity(Rarity.UNCOMMON)));
         public static final Holder<Item> SEA_BISCUIT = R.item("sea_biscuit", () -> new Item(new Item.Properties().stacksTo(64)));
         public static final Holder<Item> ROE = R.item("roe", RoeItem::new, p -> p.stacksTo(64));
         public static final Holder<Item> AGED_ROE = R.item("aged_roe", AgedRoeItem::new, p -> p.stacksTo(64).food(new FoodProperties.Builder().nutrition(4).saturationModifier(0.6f).build()));
@@ -61,6 +57,7 @@ public class ModElements {
         private static void bootstrap() {
         }
     }
+
     public static class Tags {
         public static final TagKey<Block> POND_WATER = TagKey.create(Registries.BLOCK, loc("fish_pond_water"));
 

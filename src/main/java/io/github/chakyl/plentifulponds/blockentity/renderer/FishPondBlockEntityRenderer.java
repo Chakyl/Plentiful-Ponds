@@ -2,6 +2,7 @@ package io.github.chakyl.plentifulponds.blockentity.renderer;
 
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.github.chakyl.plentifulponds.ModElements;
 import io.github.chakyl.plentifulponds.block.FishPondBlock;
@@ -39,7 +40,7 @@ public class FishPondBlockEntityRenderer implements BlockEntityRenderer<FishPond
         float ticks = (blockEntity.getLevel().getGameTime() + partialTick);
         poseStack.translate(0, -1.2 + (float) Math.sin(ticks * 0.06f) * 0.05f, 0);
         poseStack.mulPose(Axis.YP.rotationDegrees(ticks * 2F));
-        var vertexConsumer = bufferSource.getBuffer(RenderType.entityCutout(texture));
+        VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.entityCutout(texture));
         this.model.renderToBuffer(poseStack, vertexConsumer, packedLight, packedOverlay);
         poseStack.popPose();
     }
@@ -48,8 +49,6 @@ public class FishPondBlockEntityRenderer implements BlockEntityRenderer<FishPond
     public void render(FishPondBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         if (!blockEntity.isValid()) {
             renderExclamation(ERROR_TEXTURE, blockEntity, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
-        } else if (blockEntity.isQuestActive()) {
-            renderExclamation(QUEST_TEXTURE, blockEntity, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
         } else if (blockEntity.hasOutput()) {
             ItemStack roeStack = ModElements.Items.ROE.value().getDefaultInstance();
             RoeItem.setStoredFish(roeStack, blockEntity.getPond());
@@ -73,6 +72,8 @@ public class FishPondBlockEntityRenderer implements BlockEntityRenderer<FishPond
                     (int) blockEntity.getBlockPos().asLong()
             );
             poseStack.popPose();
+        } else if (blockEntity.isQuestActive()) {
+            renderExclamation(QUEST_TEXTURE, blockEntity, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
         }
         if (blockEntity.getFishType() != null) {
             ItemStack fish = blockEntity.getFishType().getDefaultInstance();

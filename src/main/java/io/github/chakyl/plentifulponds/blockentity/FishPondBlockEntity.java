@@ -398,7 +398,7 @@ public class FishPondBlockEntity extends BlockEntity implements TickingBlockEnti
     }
 
     public boolean hasFish() {
-        return this.fishType != null;
+        return this.fishType != null && this.getPond() != null;
     }
 
     public Item getFishType() {
