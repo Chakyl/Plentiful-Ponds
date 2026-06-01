@@ -17,7 +17,7 @@
   "item.plentifulponds.default_smoked_fish": "Smoked Fish",
   "item.plentifulponds.smoked_fish": "Smoked %s",
   "item.plentifulponds.sea_biscuit": "Sea Biscuit",
-  "item.plentifulponds.aquamarine": "Aquamarine",
+  "item.plentifulponds.sea_biscuit.description": "Use on a Fish Pond to double chance of non-Roe items",
 
   "itemGroup.plentifulponds": "Plentiful Ponds",
 

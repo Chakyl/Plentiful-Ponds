@@ -331,7 +331,8 @@ public class FishPondBlockEntity extends BlockEntity implements TickingBlockEnti
             for (PondDrop drop : pond.pondDrops()) {
                 if (this.population >= drop.minPopulation()) {
                     float chance = drop.chance();
-                    // TODO: handle Scum Collector and Sea Biscuit
+                    if (this.getBlockState().getValue(FishPondBlock.UPGRADED)) chance *= 2;
+                    // TODO: handle Scum Collector
                     if (Math.random() <= chance) {
                         // Rewards scale to amount of fish population relative to when reward starts spawning
                         int rewardCount = Mth.floor(drop.drop().getCount() * ((float) (population - drop.minPopulation()) / (pond.maxPopulation() - drop.minPopulation())));

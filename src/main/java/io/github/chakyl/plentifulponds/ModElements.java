@@ -9,6 +9,7 @@ import io.github.chakyl.plentifulponds.data.Pond;
 import io.github.chakyl.plentifulponds.data.PondRegistry;
 import io.github.chakyl.plentifulponds.item.AgedRoeItem;
 import io.github.chakyl.plentifulponds.item.RoeItem;
+import io.github.chakyl.plentifulponds.item.SeaBiscuitItem;
 import io.github.chakyl.plentifulponds.screen.FishPondMenu;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
@@ -20,6 +21,7 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -50,7 +52,7 @@ public class ModElements {
 
     public static class Items {
         public static final Holder<Item> FISH_POND = R.blockItem("fish_pond", Blocks.FISH_POND);
-        public static final Holder<Item> SEA_BISCUIT = R.item("sea_biscuit", () -> new Item(new Item.Properties().stacksTo(64)));
+        public static final Holder<Item> SEA_BISCUIT = R.item("sea_biscuit", () -> new SeaBiscuitItem(new Item.Properties().stacksTo(64).rarity(Rarity.RARE)));
         public static final Holder<Item> ROE = R.item("roe", RoeItem::new, p -> p.stacksTo(64));
         public static final Holder<Item> AGED_ROE = R.item("aged_roe", AgedRoeItem::new, p -> p.stacksTo(64).food(new FoodProperties.Builder().nutrition(4).saturationModifier(0.6f).build()));
 

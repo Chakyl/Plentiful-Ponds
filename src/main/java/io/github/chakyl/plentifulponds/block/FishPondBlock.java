@@ -3,6 +3,7 @@ package io.github.chakyl.plentifulponds.block;
 import com.mojang.serialization.MapCodec;
 import dev.shadowsoffire.placebo.block_entity.TickingEntityBlock;
 import dev.shadowsoffire.placebo.menu.MenuUtil;
+import io.github.chakyl.plentifulponds.ModElements;
 import io.github.chakyl.plentifulponds.PlentifulPonds;
 import io.github.chakyl.plentifulponds.blockentity.FishPondBlockEntity;
 import io.github.chakyl.plentifulponds.screen.FishPondMenu;
@@ -62,7 +63,6 @@ public class FishPondBlock extends HorizontalDirectionalBlock implements Ticking
     protected @NotNull ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         BlockEntity entity = level.getBlockEntity(pos);
         if (!level.isClientSide && hand == InteractionHand.MAIN_HAND && entity instanceof FishPondBlockEntity fishPondBlockEntity) {
-            // TODO: Quest submission
             if (player.isCrouching() && stack.isEmpty()) {
                 ItemStack extractedFish = fishPondBlockEntity.handleFishExtraction();
                 if (!extractedFish.isEmpty()) {
@@ -71,6 +71,10 @@ public class FishPondBlock extends HorizontalDirectionalBlock implements Ticking
                 }
                 return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
             } if (!stack.isEmpty()) {
+                if (!state.getValue(UPGRADED) && stack.is(ModElements.Items.SEA_BISCUIT)) {
+                    level.setBlock(pos, state.setValue(UPGRADED, true), 3);
+                    return ItemInteractionResult.CONSUME;
+                }
                 if (fishPondBlockEntity.isQuestActive()) {
                     fishPondBlockEntity.handleQuestSubmission(player, hand, stack);
                     return ItemInteractionResult.CONSUME;
