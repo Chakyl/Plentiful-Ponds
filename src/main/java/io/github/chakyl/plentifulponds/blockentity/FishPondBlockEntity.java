@@ -60,9 +60,7 @@ public class FishPondBlockEntity extends BlockEntity implements TickingBlockEnti
         this.data.addData(() -> this.questId, v -> this.questId = v);
         this.data.addData(() -> this.questActive, v -> this.questActive = v);
         this.data.addData(() -> this.valid, v -> this.valid = v);
-
     }
-
 
     @Override
     public void serverTick(Level level, BlockPos pos, BlockState state) {

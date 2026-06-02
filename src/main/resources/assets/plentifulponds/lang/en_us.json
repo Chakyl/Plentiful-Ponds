@@ -18,6 +18,9 @@
   "item.plentifulponds.smoked_fish": "Smoked %s",
   "item.plentifulponds.sea_biscuit": "Sea Biscuit",
   "item.plentifulponds.sea_biscuit.description": "Use on a Fish Pond to double chance of non-Roe items",
+  "item.plentifulponds.oceanite": "Oceanite",
+  "item.plentifulponds.oceanite_cluster": "Oceanite Cluster",
+  "item.plentifulponds.pond_scum": "Pond Scum",
 
   "itemGroup.plentifulponds": "Plentiful Ponds",
 

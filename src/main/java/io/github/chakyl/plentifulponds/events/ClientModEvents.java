@@ -1,14 +1,16 @@
 package io.github.chakyl.plentifulponds.events;
 
 import dev.shadowsoffire.placebo.reload.DynamicHolder;
+import io.github.chakyl.plentifulponds.ModElements;
 import io.github.chakyl.plentifulponds.PlentifulPonds;
+import io.github.chakyl.plentifulponds.blockentity.RoeRecyclerBlockEntity;
 import io.github.chakyl.plentifulponds.blockentity.renderer.FishPondBlockEntityRenderer;
 import io.github.chakyl.plentifulponds.data.Pond;
 import io.github.chakyl.plentifulponds.item.AgedRoeItem;
 import io.github.chakyl.plentifulponds.item.RoeItem;
-import io.github.chakyl.plentifulponds.ModElements;
 import io.github.chakyl.plentifulponds.model.ExclamationModel;
 import io.github.chakyl.plentifulponds.screen.FishPondScreen;
+import io.github.chakyl.plentifulponds.screen.RoeRecyclerScreen;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.neoforged.api.distmarker.Dist;
@@ -28,6 +30,7 @@ public class ClientModEvents {
     @SubscribeEvent
     public static void screens(RegisterMenuScreensEvent e) {
         e.register(ModElements.Menus.FISH_POND, FishPondScreen::new);
+        e.register(ModElements.Menus.ROE_RECYCLER, RoeRecyclerScreen::new);
     }
 
     @SubscribeEvent
@@ -58,10 +61,7 @@ public class ClientModEvents {
 
     @SubscribeEvent
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(
-                ModElements.BlockEntities.FISH_POND,
-                FishPondBlockEntityRenderer::new
-        );
+        event.registerBlockEntityRenderer(ModElements.BlockEntities.FISH_POND, FishPondBlockEntityRenderer::new);
     }
 
     public static final ModelLayerLocation EXCLAMATION_LAYER = new ModelLayerLocation(
