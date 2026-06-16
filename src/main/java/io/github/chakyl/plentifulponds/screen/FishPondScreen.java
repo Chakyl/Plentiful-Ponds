@@ -71,7 +71,7 @@ public class FishPondScreen extends PlaceboContainerScreen<FishPondMenu> impleme
     @Override
     protected void renderTooltip(GuiGraphics gfx, int pX, int pY) {
         // Fish Stats
-        if (this.isHovering(11,  24,  13, 13, pX, pY)) {
+        if (this.isHovering(11, 24, 13, 13, pX, pY)) {
             List<Component> txt = new ArrayList<>(4);
             Pond pond = this.menu.getPond();
             txt.add(Component.translatable("gui.tooltip.plentifulponds.pond.fish_stats", this.menu.getFishType().getDefaultInstance().getHoverName().getString()).withStyle(ChatFormatting.AQUA));
@@ -86,7 +86,7 @@ public class FishPondScreen extends PlaceboContainerScreen<FishPondMenu> impleme
             gfx.renderComponentTooltip(this.font, txt, pX, pY);
         }
         // Clear Pond
-        if (this.isHovering(137,  38,  20, 20, pX, pY)) {
+        if (this.isHovering(137, 38, 20, 20, pX, pY)) {
             List<Component> txt = new ArrayList<>(3);
             txt.add(Component.translatable("gui.tooltip.plentifulponds.pond.clear").withStyle(ChatFormatting.RED));
             txt.add(Component.translatable("gui.tooltip.plentifulponds.pond.clear_tutorial1").withStyle(ChatFormatting.GRAY));
@@ -94,7 +94,7 @@ public class FishPondScreen extends PlaceboContainerScreen<FishPondMenu> impleme
             gfx.renderComponentTooltip(this.font, txt, pX, pY);
         }
         // Fish Render
-        if (this.isHovering(137,  61,  20, 20, pX, pY)) {
+        if (this.isHovering(137, 61, 20, 20, pX, pY)) {
             List<Component> txt = new ArrayList<>(2);
             txt.add(Component.translatable("gui.tooltip.plentifulponds.pond.render").withStyle(ChatFormatting.GREEN));
             // TODO: Add enabled/disabled text
@@ -157,7 +157,7 @@ public class FishPondScreen extends PlaceboContainerScreen<FishPondMenu> impleme
 
             float[] originalColor = RenderSystem.getShaderColor().clone();
 
-            int fishInSecondRow = maxPopulation % maxFishPerRow;
+            int fishInSecondRow = maxPopulation > maxFishPerRow ? maxPopulation - maxFishPerRow : 0;
             if (fishInSecondRow == 0) {
                 fishInSecondRow = maxFishPerRow;
                 fishGridTop = top + 53;

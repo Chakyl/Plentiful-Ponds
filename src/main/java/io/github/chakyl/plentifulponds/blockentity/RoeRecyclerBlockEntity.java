@@ -21,7 +21,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.fml.common.Mod;
 
 import java.util.function.Consumer;
 
@@ -63,13 +62,7 @@ public class RoeRecyclerBlockEntity extends BlockEntity implements TickingBlockE
                         this.progress = 0;
                         this.setChanged();
                         roeItem.shrink(1);
-                        ((ServerLevel) level).sendParticles(
-                                ParticleTypes.BUBBLE,
-                                pos.getX(), pos.getY(), pos.getZ(),
-                                4,
-                                0.5, 2, 0.5,
-                                0.002
-                        );
+                        ((ServerLevel) level).sendParticles(ParticleTypes.BUBBLE, pos.getX(), pos.getY(), pos.getZ(), 4, 0.5, 2, 0.5, 0.002);
                     }
                 }
             } else {
@@ -83,8 +76,9 @@ public class RoeRecyclerBlockEntity extends BlockEntity implements TickingBlockE
         if (!pondHold.isBound()) return ItemStack.EMPTY;
         Pond pond = pondHold.get();
         int resolvedPopulation = Mth.randomBetweenInclusive(this.level.getRandom(), 1, pond.maxPopulation());
-        if (Math.random() < 0.75 && resolvedPopulation > pond.maxPopulation() / 2)
+        if (Math.random() < 0.75 && resolvedPopulation > pond.maxPopulation() / 2) {
             resolvedPopulation = Mth.randomBetweenInclusive(this.level.getRandom(), 1, pond.maxPopulation() / 2);
+        }
         resolvedPopulation = Mth.floor(resolvedPopulation);
         if (pond.pondDrops() != null && !pond.pondDrops().isEmpty()) {
             for (PondDrop drop : pond.pondDrops()) {

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import dev.shadowsoffire.placebo.reload.DynamicRegistry;
 import io.github.chakyl.plentifulponds.PlentifulPonds;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -43,21 +44,22 @@ public class PondRegistry extends DynamicRegistry<Pond> {
     @Override
     protected void validateItem(ResourceLocation key, Pond pond) {
         pond.validate(key);
-        if (this.pondTypes.containsKey(pond.fish().getDescriptionId())) {
+        String fishId = BuiltInRegistries.ITEM.getKey(pond.fish()).toString();
+        if (this.pondTypes.containsKey(fishId)) {
             String msg = "Attempted to register two ponds (%s and %s) for pond IDs %s!";
-            throw new UnsupportedOperationException(String.format(msg, key, this.getKey(this.pondTypes.get(pond.fish().getDescriptionId())), pond.fish()));
+            throw new UnsupportedOperationException(String.format(msg, key, this.getKey(this.pondTypes.get(fishId)), pond.fish()));
         }
-        this.pondTypes.put(pond.fish().getDescriptionId(), pond);
+        this.pondTypes.put(fishId, pond);
     }
 
     public boolean isPondFish(Item item) {
         if (item == null) return false;
-        return this.pondTypes.get(item.getDescriptionId()) != null;
+        return this.pondTypes.get(BuiltInRegistries.ITEM.getKey(item).toString()) != null;
     }
 
     public Pond getForItem(Item item) {
         if (item == null) return null;
-        return this.pondTypes.get(item.getDescriptionId());
+        return this.pondTypes.get(BuiltInRegistries.ITEM.getKey(item).toString());
     }
 
     @Override
