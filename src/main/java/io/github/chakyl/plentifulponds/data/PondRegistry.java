@@ -16,7 +16,6 @@ import java.util.Map;
 import static io.github.chakyl.plentifulponds.PlentifulPonds.loc;
 
 public class PondRegistry extends DynamicRegistry<Pond> {
-
     public static final PondRegistry INSTANCE = new PondRegistry();
     private Map<String, Pond> pondTypes = new HashMap<>();
 

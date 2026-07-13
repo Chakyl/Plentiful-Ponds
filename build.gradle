@@ -147,7 +147,7 @@ dependencies {
     implementation "curse.maven:jade-324717:7545219"
 
 
-//    jarJar(implementation("curse.maven:fancy-tab-sections-1537163:8074204"))
+    jarJar(implementation("curse.maven:fancy-tab-sections-1537163:8419222"))
     // Example project dependency using a sister or child project:
     // implementation project(":myproject")
 
