@@ -11,12 +11,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.List;
 
 
 @Mod(PlentifulPonds.MODID)
@@ -24,8 +29,13 @@ public class PlentifulPonds {
     public static final String MODID = "plentifulponds";
     public static final Logger LOGGER = LogManager.getLogger(MODID);
     public static ConglomerateOfItems roe = ConglomerateOfItems.create();
+    private static final ModConfigSpec.Builder CONFIG_BUILDER = new ModConfigSpec.Builder();
+    public static final PlentifulConfig CONFIG = new PlentifulConfig(CONFIG_BUILDER);
+    public static boolean KUBEJS_INSTALLED = false;
 
-    public PlentifulPonds(IEventBus bus) {
+    public PlentifulPonds(ModContainer container) {
+        IEventBus bus = container.getEventBus();
+        container.registerConfig(ModConfig.Type.COMMON, CONFIG_BUILDER.build());
         bus.register(this);
         ModElements.bootstrap(bus);
     }
@@ -62,7 +72,7 @@ public class PlentifulPonds {
                                         return s;
                                     })
                                     .toList())
-                            .add((registry) -> PondRegistry.INSTANCE.getKeys().stream()
+                            .add((registry) -> CONFIG.enableAgedRoe.get() ? PondRegistry.INSTANCE.getKeys().stream()
                                     .sorted()
                                     .map(PondRegistry.INSTANCE::holder)
                                     .map(holder -> {
@@ -70,7 +80,7 @@ public class PlentifulPonds {
                                         AgedRoeItem.setStoredFish(s, holder);
                                         return s;
                                     })
-                                    .toList()));
+                                    .toList() : List.of()));
         });
     }
 

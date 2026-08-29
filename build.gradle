@@ -142,12 +142,18 @@ dependencies {
 
     // Example mod dependency using a file as dependency
     // implementation files("libs/coolmod-${mc_version}-${coolmod_version}.jar")
-    implementation "curse.maven:placebo-283644:6926281"
     implementation "curse.maven:jei-238222:7420587"
     implementation "curse.maven:jade-324717:7545219"
-
-
+    // Placebo
+    implementation "curse.maven:placebo-283644:8463693"
+    // KubeJS
+    implementation "curse.maven:kubejs-238086:8715199"
+    implementation "curse.maven:better-advanced-tooltips-1637623:8576077"
+    implementation "curse.maven:rhino-416294:8463898"
+    // Fancy Tab Sections
     jarJar(implementation("curse.maven:fancy-tab-sections-1537163:8419222"))
+    // LibTooltips
+    jarJar(implementation("curse.maven:libtooltips-1370245:8369025"))
     // Example project dependency using a sister or child project:
     // implementation project(":myproject")
 

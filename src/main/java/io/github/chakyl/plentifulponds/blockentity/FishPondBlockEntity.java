@@ -3,6 +3,7 @@ package io.github.chakyl.plentifulponds.blockentity;
 import dev.shadowsoffire.placebo.block_entity.TickingBlockEntity;
 import dev.shadowsoffire.placebo.menu.SimpleDataSlots;
 import io.github.chakyl.plentifulponds.ModElements;
+import io.github.chakyl.plentifulponds.PlentifulPonds;
 import io.github.chakyl.plentifulponds.block.FishPondBlock;
 import io.github.chakyl.plentifulponds.data.Pond;
 import io.github.chakyl.plentifulponds.data.PondRegistry;
@@ -21,6 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -38,6 +40,8 @@ import net.minecraft.world.level.material.Fluids;
 
 import java.util.Collection;
 import java.util.function.Consumer;
+
+import static io.github.chakyl.plentifulponds.util.GeneralUtils.playerHasStage;
 
 public class FishPondBlockEntity extends BlockEntity implements TickingBlockEntity, SimpleDataSlots.IDataAutoRegister {
     protected final int FISH_POND_DAY_TIME_TRIGGER = 40;
@@ -240,10 +244,10 @@ public class FishPondBlockEntity extends BlockEntity implements TickingBlockEnti
     public void handleQuestSubmission(Player player, InteractionHand hand, ItemStack stack) {
         ItemStack questContent = getRequestedItems();
         if (!stack.isEmpty() && !questContent.isEmpty() && stack.getItem() == questContent.getItem()) {
-//            TODO: pond_house_five int checkedCount = player.stages.has("pond_house_five")
-//                    ? Math.round(questContent.count / 2)
-//                    : questContent.count;
-            int checkedCount = questContent.getCount();
+            // Stage: Pond House Five
+            int checkedCount = playerHasStage((ServerPlayer) player, PlentifulPonds.CONFIG.quest_reduction_stage)
+                    ? Math.round((float) questContent.getCount() / 2)
+                    : questContent.getCount();
             if (stack.getCount() >= checkedCount) {
 
                 sendParticles(ParticleTypes.WAX_OFF, level, this.getBlockPos());
@@ -260,13 +264,15 @@ public class FishPondBlockEntity extends BlockEntity implements TickingBlockEnti
         }
     }
 
-    public ItemStack handleFishExtraction() {
-        int extractionAmount = 1; // TODO: Mitosis
+    public ItemStack handleFishExtraction(Player player) {
+        // Stage: Mitosis
+        int extractionAmount = playerHasStage((ServerPlayer) player, PlentifulPonds.CONFIG.mitosis_stage) ? 2 : 1;
         int naturalPopulation = this.population - this.nonNativeFish;
         BlockPos pondPos = this.getBlockPos();
         ItemStack result = ItemStack.EMPTY;
         if (this.population <= 0) return result;
-        if (false && naturalPopulation > 0) { // TODO: Hot Hands
+        // Stage: Hot Hands
+        if (playerHasStage((ServerPlayer) player, PlentifulPonds.CONFIG.hot_hands_stage) && naturalPopulation > 0) {
             this.level.playSound(null, pondPos.getX(), pondPos.getY(), pondPos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1.0f, 1.0f);
             if (Math.random() < 0.25) {
                 result = Items.COAL.getDefaultInstance();
@@ -315,11 +321,11 @@ public class FishPondBlockEntity extends BlockEntity implements TickingBlockEnti
         }
     }
 
-    public Collection<ItemStack> handlePondHarvest() {
+    public Collection<ItemStack> handlePondHarvest(Player player) {
         NonNullList<ItemStack> drops = NonNullList.create();
         if (!this.hasOutput || this.population <= 0) return drops;
         Pond pond = this.getPond();
-        int maxRoe = pond.maxRoe(); // TODO: Modify by player attributes
+        int maxRoe = pond.maxRoe();
         int calculatedRoeCount = Math.min(this.population, Mth.randomBetweenInclusive(this.level.random, 1, maxRoe));
         ItemStack roeStack = ModElements.Items.ROE.value().getDefaultInstance();
         RoeItem.setStoredFish(roeStack, pond);
@@ -330,7 +336,8 @@ public class FishPondBlockEntity extends BlockEntity implements TickingBlockEnti
                 if (this.population >= drop.minPopulation()) {
                     float chance = drop.chance();
                     if (this.getBlockState().getValue(FishPondBlock.UPGRADED)) chance *= 2;
-                    // TODO: handle Scum Collector
+                    // Stage: Scum Collector
+                    if (playerHasStage((ServerPlayer) player, PlentifulPonds.CONFIG.hot_hands_stage)) chance *= 2;
                     if (Math.random() <= chance) {
                         // Rewards scale to amount of fish population relative to when reward starts spawning
                         int rewardCount = Mth.floor(drop.drop().getCount() * ((float) (population - drop.minPopulation()) / (pond.maxPopulation() - drop.minPopulation())));
